@@ -26,7 +26,7 @@ public class FileUploadController {
     }
 
     @GetMapping("/")
-    public String showStartPage() throws IOException {
+    public String showStartPage() {
         return "uploadForm";
     }
 
@@ -34,13 +34,17 @@ public class FileUploadController {
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
         //DeferredResult<Model> deferredResult = new DeferredResult<>();
+        StringBuilder message = new StringBuilder();
         try {
             fileProcessor.process(file);
+            message.append("You successfully uploaded!");
         } catch (FileProcessException e) {
-            // to do
+            for (String error : e.getProcessingResult().getErrors()) {
+                message.append(error).append("\n");
+            }
         }
 
-        redirectAttributes.addFlashAttribute("message", "You successfully uploaded!");
+        redirectAttributes.addFlashAttribute("message", message.toString());
         return "redirect:/";
     }
 }
