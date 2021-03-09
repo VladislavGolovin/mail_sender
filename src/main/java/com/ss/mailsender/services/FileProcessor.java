@@ -1,8 +1,6 @@
-package com.ss.mail_sender.services;
+package com.ss.mailsender.services;
 
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 public interface FileProcessor {
 

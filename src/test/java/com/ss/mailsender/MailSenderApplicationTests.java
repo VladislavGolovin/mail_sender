@@ -1,4 +1,4 @@
-package com.ss.mail_sender;
+package com.ss.mailsender;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

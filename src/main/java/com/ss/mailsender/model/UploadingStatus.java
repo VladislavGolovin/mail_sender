@@ -1,4 +1,4 @@
-package com.ss.mail_sender.model;
+package com.ss.mailsender.model;
 
 public enum UploadingStatus {
 

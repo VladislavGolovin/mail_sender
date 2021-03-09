@@ -1,7 +1,7 @@
-package com.ss.mail_sender.controllers;
+package com.ss.mailsender.controllers;
 
-import com.ss.mail_sender.services.FileProcessException;
-import com.ss.mail_sender.services.FileProcessor;
+import com.ss.mailsender.services.FileProcessException;
+import com.ss.mailsender.services.FileProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.io.IOException;
 
 @Controller
 public class FileUploadController {

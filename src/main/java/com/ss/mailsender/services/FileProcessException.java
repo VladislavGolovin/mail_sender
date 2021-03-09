@@ -1,6 +1,6 @@
-package com.ss.mail_sender.services;
+package com.ss.mailsender.services;
 
-import com.ss.mail_sender.model.ProcessingResult;
+import com.ss.mailsender.model.ProcessingResult;
 
 public class FileProcessException extends Exception {
 

@@ -1,4 +1,4 @@
-package com.ss.mail_sender.model;
+package com.ss.mailsender.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.ss.mail_sender;
+package com.ss.mailsender;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
