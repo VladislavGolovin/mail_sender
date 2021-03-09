@@ -11,9 +11,12 @@
 	<groupId>com.ss</groupId>
 	<artifactId>mail_sender</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+<!--
 	<packaging>war</packaging>
 	<name>mail_sender</name>
 	<description>Mail sender</description>
+-->
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -32,11 +35,14 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
