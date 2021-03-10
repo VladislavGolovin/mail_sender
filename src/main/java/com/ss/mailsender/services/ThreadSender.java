@@ -1,14 +1,15 @@
 package com.ss.mailsender.services;
 
-import com.ss.mailsender.model.ProcessingResult;
-import com.ss.mailsender.model.UploadingStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 public class ThreadSender extends Thread {
 
@@ -21,57 +22,62 @@ public class ThreadSender extends Thread {
     private static int ID = 0;
 
     private final MultipartFile multipartfile;
-    private String processFileResult;
 
     private int localId = ID++;
     private int rows = 0;
     private String status = STATUS_NEW;
-    private String errorCode;
+    // коды ошибок:
+    // 0 - ошибок нет.
+    // 1 - неверное имя файла
+    // 2 - файл не найден
+    // 100 - неизвестная ошибка во время чтения файла
+    private int errorCode;
     private String errorDesc;
     private LocalDateTime finishDate = null;
 
-    public ThreadSender(MultipartFile multipartfile, String processFileResult) {
+    public ThreadSender(MultipartFile multipartfile) {
         this.multipartfile = multipartfile;
-        this.processFileResult = processFileResult;
     }
 
     @Override
     public void run() {
         status = STATUS_RUN;
 
-        // open file
+        // for checking thread
         try {
-            String fileName = multipartfile.getOriginalFilename();
-            if (!fileName.endsWith(".csv")) {
-                throwFileProcessException("File " + fileName + ": the file extension should be .csv");
-            }
+            TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException e) {
 
-            try (var reader = new BufferedReader(new InputStreamReader(multipartfile.getInputStream()))) {
-                String fileLine;
-                while ((fileLine = reader.readLine()) != null) {
-                    if (STATUS_2CANCEL.equals(status)) {
-                        break;
-                    }
-                    rows++;
+        }
+        //
 
-                    // parsing file line.
-                    // composing email.
-                    // sending email.
-
-                }
-
-                finishDate = LocalDateTime.now();
-                status = STATUS_FINISHED;
-            } catch (FileNotFoundException e) {
-                throwFileProcessException("File " + fileName + ": not found.");
-            } catch (IOException e) {
-                throwFileProcessException("File " + fileName + ": error during file reading.");
-            }
-        } catch (FileProcessException e) {
-            status = STATUS_ERROR;
+        // open file
+        String fileName = multipartfile.getOriginalFilename();
+        if (fileName != null && !fileName.endsWith(".csv")) {
+            fillProcessingResults(STATUS_ERROR, 1, "File " + fileName + ": the file extension should be .csv");
         }
 
-        processFileResult = status;
+        try (var reader = new BufferedReader(
+                new InputStreamReader(multipartfile.getInputStream(), StandardCharsets.UTF_8))) {
+            String fileLine;
+            while ((fileLine = reader.readLine()) != null) {
+                if (STATUS_2CANCEL.equals(status)) {
+                    break;
+                }
+                rows++;
+
+                // parsing file line.
+                // composing email.
+                // sending email.
+
+            }
+
+            fillProcessingResults(STATUS_FINISHED, 0, "File was processing successfully");
+        } catch (FileNotFoundException e) {
+            fillProcessingResults(STATUS_ERROR, 2, "File " + fileName + ": the file extension should be .csv");
+        } catch (IOException e) {
+            fillProcessingResults(STATUS_ERROR, 100, "File " + fileName + ": error during file reading");
+        }
     }
 
     public void setStatus2Cancel() {
@@ -82,7 +88,7 @@ public class ThreadSender extends Thread {
         return rows;
     }
 
-    public String getErrorCode() {
+    public int getErrorCode() {
         return errorCode;
     }
 
@@ -102,9 +108,22 @@ public class ThreadSender extends Thread {
         return finishDate;
     }
 
-    private void throwFileProcessException(String error) throws FileProcessException {
-        var processingResult = new ProcessingResult(UploadingStatus.COMPLETED_WITH_ERROR);
-        processingResult.addError(error);
-        throw new FileProcessException(processingResult);
+    private void fillProcessingResults(String status, int errorCode, String errorDesc) {
+        this.status = status;
+        this.errorCode = errorCode;
+        this.errorDesc = errorDesc;
+        this.finishDate = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return "ThreadSender{" +
+                "Id=" + localId +
+                ", rows=" + rows +
+                ", status='" + status + '\'' +
+                ", error code='" + errorCode + '\'' +
+                ", error desc='" + errorDesc + '\'' +
+                ", finish date=" + finishDate +
+                '}';
     }
 }
