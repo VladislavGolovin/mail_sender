@@ -1,0 +1,21 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Thread list</title>
+</head>
+
+<body>
+	<div>
+		<h3>Thread list:</h3>
+	</div>
+
+	<div>
+		<ul>
+			<li th:each="thread : ${threads}">
+				<a th:text="${thread}"/>
+			</li>
+		</ul>
+	</div>
+
+</body>
+</html>
