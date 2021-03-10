@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author VGolovin
+ */
 public class DataValidator {
 
     // creating not sorted list (dataset from CsvParser)
@@ -18,13 +21,13 @@ public class DataValidator {
     // creating list for invalid data
     List <String[]> notValidData = new ArrayList<>();
 
-    //Const settings
+    // settings
     int emailPosition = 0;
     int validNumberOfData = 3;
 
     public void dataValidator(String fileName){
 
-        //creating object of CsvParser
+        // creating object of CsvParser
         CsvParser cp = new CsvParser();
 
         notSortedData = cp.csvParser(fileName);
@@ -40,7 +43,7 @@ public class DataValidator {
         }
     }
 
-    //Checking for email validation
+    // checking for email validation
     public boolean emailChecker(String email){
 
         String regexForEmailValidation = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";

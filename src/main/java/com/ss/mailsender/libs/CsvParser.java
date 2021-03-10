@@ -11,9 +11,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author VGolovin
+ */
 public class CsvParser {
 
     // creating dataset
@@ -31,7 +35,7 @@ public class CsvParser {
         File file = new File(fileName);
         try {
             // create an object of file reader class with CSV file as a parameter.
-            FileReader filereader = new FileReader(file);
+            FileReader filereader = new FileReader(file, StandardCharsets.UTF_8);
 
             // create csvParser object with custom delimiter and quote character
             CSVParser parser = new CSVParserBuilder().withSeparator(separator).withQuoteChar(quote).build();
@@ -50,7 +54,7 @@ public class CsvParser {
             }
         }
         catch (FileNotFoundException e) {
-            System.err.println(e.getMessage() + ", because " + e.getCause() + " in file: " + file.getAbsolutePath());
+            System.err.println(e.getMessage() + ", because " + e.getCause() + " in file: " + file.getAbsolutePath()); // не уверен, что вернёт корректный путь
         }
         // не смог понять в каком случае можем получить CsvException и IOException поэтому обработал так
         catch (IOException | CsvException e) {
