@@ -18,6 +18,10 @@ public class DataValidator {
     // creating list for invalid data
     List <String[]> notValidData = new ArrayList<>();
 
+    //Const settings
+    int emailPosition = 0;
+    int validNumberOfData = 3;
+
     public void dataValidator(String fileName){
 
         //creating object of CsvParser
@@ -28,7 +32,7 @@ public class DataValidator {
         // watching rows(lines) one by one. If row contains valid number of elements
         // and emailchecker returns "true" - adding row in validList
         for (String[] data: notSortedData) {
-            if (data.length == 3 && emailChecker(data[0]) == true){
+            if (data.length == validNumberOfData && emailChecker(data[emailPosition]) == true){
                 validData.add(data);
             } else {
                 notValidData.add(data);
