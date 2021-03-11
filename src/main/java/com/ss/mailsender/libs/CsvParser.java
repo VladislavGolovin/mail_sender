@@ -5,15 +5,17 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
+import com.ss.mailsender.ConfigValidator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author VGolovin
@@ -24,9 +26,9 @@ public class CsvParser {
     List<String[]> dataset = new ArrayList<>();
 
     // setting separator
-    char separator = ';';
+    private static final char separator = ';';
     // setting quote
-    char quote = '"';
+    private static final char quote = '"';
 
     public List<String[]> csvParser(String fileName) {
 
@@ -54,14 +56,14 @@ public class CsvParser {
             }
         }
         catch (FileNotFoundException e) {
-            System.err.println(e.getMessage() + ", because " + e.getCause() + " in file: " + file.getAbsolutePath()); // не уверен, что вернёт корректный путь
+            Logger.getLogger(CsvParser.class.getName()).log(Level.SEVERE, e.getMessage() + ", because " + e.getCause() + " in file: " + file.getAbsolutePath(), e); // не уверен, что вернёт корректный путь
         }
         // не смог понять в каком случае можем получить CsvException и IOException поэтому обработал так
         catch (IOException | CsvException e) {
-            System.err.println(e.getMessage() + ", because " + e.getCause());
+            Logger.getLogger(CsvParser.class.getName()).log(Level.SEVERE, e.getMessage() + ", because " + e.getCause(), e);
         }
         if (dataset.isEmpty()){
-            System.out.println(file.getAbsolutePath() + " is empty!");
+            Logger.getLogger(CsvParser.class.getName()).log(Level.WARNING, file.getName() + " is empty!");
         }
         return dataset;
     }

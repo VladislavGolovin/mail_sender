@@ -7,6 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MailSenderApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MailSenderApplication.class, args);
+        // checking application config
+        ConfigValidator cv = new ConfigValidator();
+        int configStatus = cv.configValidator();
+
+        // status code = 0 - config valid, else invalid
+        if (configStatus == 0){
+            SpringApplication.run(MailSenderApplication.class, args);
+        }
     }
 }
