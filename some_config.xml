@@ -1,0 +1,19 @@
+<ipb-config>
+<!-- config for test enviroment-->
+    <init-param>
+        <description>mail server</description>
+        <param-name>mail server</param-name>
+        <param-value>smtp.mail.ru</param-value>
+    </init-param>
+    <init-param>
+        <description>mail user</description>
+        <param-name>mail user</param-name>
+        <param-value>a@mail.ru</param-value>
+    </init-param>
+    <init-param>
+        <description>mail password</description>
+        <param-name>mail password</param-name>
+        <param-value>a@mail.ru</param-value>
+    </init-param>
+
+</ipb-config>

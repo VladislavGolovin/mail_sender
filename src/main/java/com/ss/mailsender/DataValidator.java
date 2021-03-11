@@ -25,7 +25,8 @@ public class DataValidator {
     int emailPosition = 0;
     int validNumberOfData = 3;
 
-    public void dataValidator(String fileName){
+    // as result we are returning list of invalid rows
+    public List<String[]> dataValidator(String fileName){
 
         // creating object of CsvParser
         CsvParser cp = new CsvParser();
@@ -41,6 +42,7 @@ public class DataValidator {
                 notValidData.add(data);
             }
         }
+        return notValidData;
     }
 
     // checking for email validation
