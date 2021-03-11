@@ -13,6 +13,14 @@ import java.time.LocalDateTime;
 public class UploadingProcess {
     @Getter
     @Setter
+    private int id;
+
+    @Getter
+    @Setter
+    private String absoluteUploadFileName;
+
+    @Getter
+    @Setter
     private LocalDateTime startDateTime;
 
     @Getter
@@ -25,7 +33,11 @@ public class UploadingProcess {
 
     @Getter
     @Setter
-    private int loadedLinesCounter;
+    private int processedLinesCounter;
+
+    @Getter
+    @Setter
+    private int sentLinesCounter;
 
     @Getter
     @Setter
@@ -33,7 +45,7 @@ public class UploadingProcess {
 
     @Getter
     @Setter
-    private String absoluteErrorFilePath;
+    private String absoluteErrorFileName;
 
     @Getter
     @Setter
