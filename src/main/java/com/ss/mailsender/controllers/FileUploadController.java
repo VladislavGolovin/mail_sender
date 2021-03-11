@@ -1,7 +1,8 @@
 package com.ss.mailsender.controllers;
 
-import com.ss.mailsender.services.FileProcessException;
 import com.ss.mailsender.services.FileProcessor;
+import com.ss.mailsender.services.ThreadSender;
+import com.ss.mailsender.services.ThreadsList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,25 +25,19 @@ public class FileUploadController {
     }
 
     @GetMapping("/")
-    public String showStartPage() {
+    public String uploadFormView() {
         return "uploadForm";
     }
 
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
-        //DeferredResult<Model> deferredResult = new DeferredResult<>();
-        StringBuilder message = new StringBuilder();
-        try {
-            fileProcessor.process(file);
-            message.append("You successfully uploaded!");
-        } catch (FileProcessException e) {
-            for (String error : e.getProcessingResult().getErrors()) {
-                message.append(error).append("\n");
-            }
-        }
+        ThreadSender thread = new ThreadSender(file);
+        thread.start();
+        ThreadsList.addThread(thread);
 
-        redirectAttributes.addFlashAttribute("message", message.toString());
+        redirectAttributes.addFlashAttribute("message", thread.toString());
+
         return "redirect:/";
     }
 }
