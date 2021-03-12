@@ -1,5 +1,7 @@
 package com.ss.mailsender.services;
 
+import com.ss.mailsender.libs.DateTimeUtil;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -18,23 +20,23 @@ public class ThreadsList {
 
 
     public static void clearCache() {
-//        // clear threads list
-//        Calendar calendar = Calendar.getInstance();
-//        Calendar now = Calendar.getInstance();
-//        for (int i = 0; i < threads.size(); i++) {
-//            ThreadSender object = threads.get(i);
-//            if (object.getFinishDate() == null)
-//                continue;
-//
-//            calendar.setTime(object.getFinishDate());
-//            calendar.add(Calendar.SECOND, MAX_CACHE_TIME_SEC);
-//            if (now.after(calendar)) {
-//                threads.remove(i);
-//                i--;
-//            }
-//
-//        }
-//        // clear threads list ##
+        // clear threads list
+        Calendar calendar = Calendar.getInstance();
+        Calendar now = Calendar.getInstance();
+        for (int i = 0; i < threads.size(); i++) {
+            ThreadSender thread = threads.get(i);
+            if (thread.getFinishDate() == null)
+                continue;
+
+            calendar.setTime(DateTimeUtil.convertLocalDateTimeToDate(thread.getFinishDate()));
+            calendar.add(Calendar.SECOND, MAX_CACHE_TIME_SEC);
+            if (now.after(calendar)) {
+                threads.remove(i);
+                i--;
+            }
+
+        }
+        // clear threads list ##
     }
 
     public static List<ThreadSender> getThreads() {

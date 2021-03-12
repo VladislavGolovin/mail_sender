@@ -3,6 +3,7 @@ package com.ss.mailsender;
 import com.ss.mailsender.libs.XmlConfig;
 import com.ss.mailsender.libs.cache.ExceptionUpdateCached;
 
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,16 +26,17 @@ public class ConfigValidator {
         String sMailUser;
         String sMailPassword;
 
-        // just test exiting
+        // just test existing
         try
         {
             xmlConf.updateData();
         }
         catch (ExceptionUpdateCached ex)
         {
-            Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "can't open config file: " + xmlConf.getFileAbsolutePath());
+            Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "Can't open config file: " + xmlConf.getFileAbsolutePath());
         }
 
+        // checking fields of config
         try
         {
             sMailSever = xmlConf.getField(FIELD_SERVER);
@@ -58,10 +60,10 @@ public class ConfigValidator {
         }
         catch (ExceptionUpdateCached ex)
         {
-            //System.err.println(ex.getMessage() + ", because " + ex.getCause() + " in file " + xmlConf.getFileAbsolutePath());
-            Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "can't read config file: " + xmlConf.getFileAbsolutePath(), ex);
+            Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "Can't read config file: " + xmlConf.getFileAbsolutePath(), ex);
             return 1;
         }
+        Logger.getLogger(ConfigValidator.class.getName()).log(Level.INFO, "Config file succesfully loaded: " + xmlConf.getFileAbsolutePath());
         return 0;
     }
 }

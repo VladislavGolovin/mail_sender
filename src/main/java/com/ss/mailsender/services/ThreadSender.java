@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
 public class ThreadSender extends Thread {
@@ -35,9 +34,18 @@ public class ThreadSender extends Thread {
     private String errorDesc;
     private LocalDateTime finishDate = null;
 
+    //private UploadingProcessTo dto = new UploadingProcessTo();
+
     public ThreadSender(MultipartFile multipartfile) {
         this.multipartfile = multipartfile;
     }
+
+//    public UploadingProcessTo getDto()
+//    {
+//        UploadingProcessTo res = new UploadingProcessTo();
+//
+//        return res;
+//    }
 
     @Override
     public void run() {
