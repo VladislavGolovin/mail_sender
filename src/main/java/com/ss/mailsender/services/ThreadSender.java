@@ -1,26 +1,32 @@
 package com.ss.mailsender.services;
 
+import com.ss.mailsender.DataValidator;
 import com.ss.mailsender.model.UploadingProcess;
 import com.ss.mailsender.model.UploadingStatus;
+import com.ss.utils.Csv;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * // коды ошибок:
  *     // 0 - ошибок нет.
  *     // 1 - неверное имя файла
  *     // 2 - файл не найден
+ *     // 3 - файл не найден
  *     // 100 - неизвестная ошибка во время чтения файла
  */
 public class ThreadSender extends Thread {
+    public static final String ERR_CODE_OK = "ok";
+    public static final String ERR_CODE_WRONG_INPUT_FILE_NAME = "wong input file name";
+    public static final String ERR_CODE_INPUT_FILE_FOT_FOUND = "input file not found";
+    public static final String ERR_CODE_CANT_READ_INPUT = "cannot read input file";
+    public static final String ERR_CODE_CANT_WRITE = "cannot write file";
 
     private static int ID = 0;
 
@@ -29,9 +35,14 @@ public class ThreadSender extends Thread {
     @Getter
     private int localId = ID++;
 
+    private Csv.Writer csvWriter = null;
+    private Csv.Reader csvReader = null;
+    private String outputFileName;
+    private String fileName;
+
     @Getter
     private UploadingProcess process = new UploadingProcess(localId, "", LocalDateTime.now(),
-            null, "", 0,0, 0, 0,
+            null, "", ERR_CODE_OK,0, 0, 0,
             "", UploadingStatus.NEW);
     ;
 
@@ -44,48 +55,100 @@ public class ThreadSender extends Thread {
         process.setStatus(UploadingStatus.IN_PROGRESS);
         process.setAbsoluteUploadFileName(multipartfile.getOriginalFilename());
 
-        // for checking thread
-        try {
-            TimeUnit.SECONDS.sleep(10);
-        } catch (InterruptedException e) {
 
-        }
-
-        // open file
-        String fileName = multipartfile.getOriginalFilename();
+        // open intput file
+        fileName = multipartfile.getOriginalFilename();
         if (fileName != null && !fileName.endsWith(".csv")) {
-            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, 1,
+            fillResultAndFinish(UploadingStatus.COMPLETED_WITH_ERROR, ERR_CODE_WRONG_INPUT_FILE_NAME,
                     String.format("File = %s has wrong extension : the file extension should be .csv", fileName));
             return;
         }
 
-        try (var reader = new BufferedReader(
-                new InputStreamReader(multipartfile.getInputStream(), StandardCharsets.UTF_8))) {
-            String fileLine;
-            while ((fileLine = reader.readLine()) != null) {
-                if (process.getStatus() == UploadingStatus.CANCELED) {
-                    break;
+
+        outputFileName = "bad_" + localId + ".csv";
+
+        try
+        {
+            csvWriter = new Csv.Writer(new File(outputFileName));
+        }
+        catch (IOException e)
+        {
+            fillResultAndFinish(UploadingStatus.COMPLETED_WITH_ERROR, ERR_CODE_CANT_WRITE, String.format("cannot write file = %s because %s", fileName, e.getMessage()));
+            return;
+        }
+
+        try
+        {
+            csvReader = new Csv.Reader(new BufferedReader(
+                    new InputStreamReader(multipartfile.getInputStream(), StandardCharsets.UTF_8)));
+
+        } catch (FileNotFoundException e) {
+            fillResultAndFinish(UploadingStatus.COMPLETED_WITH_ERROR, ERR_CODE_INPUT_FILE_FOT_FOUND, String.format("File = %s not found", fileName));
+            return;
+        } catch (IOException e) {
+            fillResultAndFinish(UploadingStatus.COMPLETED_WITH_ERROR, ERR_CODE_CANT_READ_INPUT, String.format("Error reading file = %s "));
+            return;
+        }
+
+        List<String> csvLine;
+        while ((csvLine = csvReader.readLine()) != null) {
+            process.addProcessedLinesCounter();
+            if(!DataValidator.validate(csvLine, process.getProcessedLinesCounter()))
+            {
+                try
+                {
+                    csvWriter.addLine(csvLine);
                 }
-                process.setProcessedLinesCounter(process.getProcessedLinesCounter() + 1);
-                // parsing file line.
-                // composing email.
-                // sending email.
+                catch (IOException e)
+                {
+                    fillResultAndFinish(UploadingStatus.COMPLETED_WITH_ERROR, ERR_CODE_CANT_WRITE, String.format("has error at %d row, cannot write file = %s because %s", process.getProcessedLinesCounter(), fileName, e.getMessage()));
+                    return;
+                }
+                continue;
             }
 
-            fillProcessingResults(UploadingStatus.COMPLETED, 0,"File was processed successfully");
-        } catch (FileNotFoundException e) {
-            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, 2, String.format("File = %s not found", fileName));
-        } catch (IOException e) {
-            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, 100, String.format("Error reading file = %s "));
+            // sending email.
+
+            if (process.getStatus() == UploadingStatus.CANCELED) {
+                break;
+            }
+            // parsing file line.
+
+            // composing email.
         }
+        fillResultAndFinish(UploadingStatus.COMPLETED, ERR_CODE_OK,"File was processed successfully");
     }
 
-    private void fillProcessingResults(UploadingStatus status, int errorCode, String errorDesc) {
+    public void cancel() {process.setStatus(UploadingStatus.CANCELED);}
+
+    private void fillResultAndFinish(UploadingStatus status, String errorCode, String errorDesc) {
         process.setStatus(status);
         process.setErrorCode(errorCode);
         process.setErrorDescription(errorDesc);
         process.setFinishDateTime(LocalDateTime.now());
+        freeResources();
     }
 
+    private void freeResources()
+    {
+        if(csvWriter != null)
+        {
+            try {
+                csvWriter.close();
+            } catch (IOException e) {
+                Logger.getLogger(this.getClass().getName()).warning("cannot close " + outputFileName);
+            }
+            csvWriter = null;
+        }
+        if(csvReader != null)
+        {
+            try {
+                csvReader.close();
+            } catch (IOException e) {
+                Logger.getLogger(this.getClass().getName()).warning("cannot close " + fileName);
+            }
+            csvReader = null;
+        }
+    }
 
 }

@@ -17,6 +17,9 @@ public class ConfigValidator {
     private static final String FIELD_USER = "mail user";   // from XML file
     private static final String FIELD_PASSWORD = "mail password";   // from XML file, example of error
 
+    /**
+     * @return status code: 1 - error, 0 - awesome/nice
+     */
     public int configValidator(){
 
         // open config file
@@ -60,7 +63,7 @@ public class ConfigValidator {
         }
         catch (ExceptionUpdateCached ex)
         {
-            Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "Can't read config file: " + xmlConf.getFileAbsolutePath(), ex);
+            Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "Can't read config file: " + xmlConf.getFileAbsolutePath());
             return 1;
         }
         Logger.getLogger(ConfigValidator.class.getName()).log(Level.INFO, "Config file succesfully loaded: " + xmlConf.getFileAbsolutePath());

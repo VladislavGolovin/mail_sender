@@ -1,11 +1,7 @@
 package com.ss.mailsender;
 
-import com.ss.mailsender.libs.CsvParser;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,72 +9,43 @@ import java.util.regex.Pattern;
  * @author VGolovin
  */
 public class DataValidator {
+    public static final String STATE_NOT_ENOUGH_COLUMNS = "not enough columns";
+    public static final String STATE_WRONG_EMAIL = "wrong email";
 
-    // creating not sorted list (dataset from CsvParser)
-    List <String[]> notSortedData = new ArrayList<>();
-
-    // creating list for valid data
-    List <String[]> validData = new ArrayList<>();
-
-    // creating list for invalid data
-    List <String[]> notValidData = new ArrayList<>();
-
-    Map <String, List<String[]>> lists = new HashMap();
-
-    // settings
-    int emailPosition = 0;
-    int validNumberOfData = 3;
+    private static final int emailPosition = 0;
+    private static final int validNumberOfData = 3;
 
     /**
      *
-     * @param fileName
-     * @return as result we are returning map of valid and invalid rows
+     * @param row - could be changed!!!
+     * @param rownum
+     * @return true if row is ok
      */
-    public Map <String, List<String[]>> dataValidator(String fileName){
+    public static boolean validate(List<String> row, int rownum)
+    {
 
         // creating object of CsvParser
-        CsvParser cp = new CsvParser();
-
-        notSortedData = cp.csvParser(fileName);
-
         String message;
 
-        // watching rows(lines) one by one. If row contains valid number of elements
-        // and emailchecker returns "true" - adding row in validList
-        for (String[] data: notSortedData) {
-            boolean emailCorrect = (data.length > emailPosition && emailChecker(data[emailPosition]));
-
-            if (data.length == validNumberOfData && emailCorrect){
-                validData.add(data);
-
-                // if row`s length is invalid, we are adding error message to the first column
-            } else if (data.length != validNumberOfData && emailCorrect){
-                message = "row`s lenght not valid";
-                String[] invalidData = new String[data.length + 1];
-                invalidData[0] = message;
-                System.arraycopy(data, 1, invalidData, 1, data.length);
-                notValidData.add(invalidData);
-
-                // if row`s length and email is invalid, we are adding error message to the first column
-            } else if (data.length != validNumberOfData && emailCorrect){
-                message = "row`s lenght not valid and email is invalid!";
-                String[] invalidData = new String[data.length + 1];
-                invalidData[0] = message;
-                System.arraycopy(data, 1, invalidData, 1, data.length);
-                notValidData.add(invalidData);
-
-                // if email is invalid, we are adding error message to the first column
-            } else if (data.length == validNumberOfData && emailCorrect){
-                message = "email is invalid!";
-                String[] invalidData = new String[data.length + 1];
-                invalidData[0] = message;
-                System.arraycopy(data, 1, invalidData, 1, data.length);
-                notValidData.add(invalidData);
-            }
+        if (row.size() < validNumberOfData) {
+            addErrors(row, STATE_NOT_ENOUGH_COLUMNS,null, rownum);
+            return false;
         }
-        lists.put("valid", validData);
-        lists.put("invalid", notValidData);
-        return lists;
+
+        if(emailChecker(row.get(emailPosition)))
+            return true;
+        addErrors(row, STATE_WRONG_EMAIL,null, rownum);
+        return false;
+    }
+
+    private static  void addErrors(List<String> row, String errorState, String errorDesc, int rownum)
+    {
+        ArrayList<String> result = new ArrayList<>();
+        result.add(errorState);
+        result.add((errorDesc == null ? "at row " + rownum :  errorDesc + ", at row " + rownum));
+        result.addAll(row);
+        row.clear();
+        row.addAll(result);
     }
 
     /**
@@ -86,13 +53,13 @@ public class DataValidator {
      * @param email
      * @return TRUE if email is correct
      */
-    public boolean emailChecker(String email){
+    private static boolean emailChecker(String email){
 
         String regexForEmailValidation = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
         Pattern pattern = Pattern.compile(regexForEmailValidation);
-        Matcher matcher = pattern.matcher(email);
+        Matcher mMatcher = pattern.matcher(email);
 
-        return matcher.matches();
+        return mMatcher.matches();
     }
 }
