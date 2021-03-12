@@ -33,7 +33,7 @@ public class ThreadSender extends Thread {
     private final MultipartFile multipartfile;
 
     @Getter
-    private int localId = ID++;
+    private final int localId = ID++;
 
     private Csv.Writer csvWriter = null;
     private Csv.Reader csvReader = null;
@@ -41,10 +41,9 @@ public class ThreadSender extends Thread {
     private String fileName;
 
     @Getter
-    private UploadingProcess process = new UploadingProcess(localId, "", LocalDateTime.now(),
+    private final UploadingProcess process = new UploadingProcess(localId, "", LocalDateTime.now(),
             null, "", ERR_CODE_OK,0, 0, 0,
             "", UploadingStatus.NEW);
-    ;
 
     public ThreadSender(MultipartFile multipartfile) {
         this.multipartfile = multipartfile;
@@ -56,7 +55,7 @@ public class ThreadSender extends Thread {
         process.setAbsoluteUploadFileName(multipartfile.getOriginalFilename());
 
 
-        // open intput file
+        // open input file
         fileName = multipartfile.getOriginalFilename();
         if (fileName != null && !fileName.endsWith(".csv")) {
             fillResultAndFinish(UploadingStatus.COMPLETED_WITH_ERROR, ERR_CODE_WRONG_INPUT_FILE_NAME,
@@ -86,7 +85,7 @@ public class ThreadSender extends Thread {
             fillResultAndFinish(UploadingStatus.COMPLETED_WITH_ERROR, ERR_CODE_INPUT_FILE_FOT_FOUND, String.format("File = %s not found", fileName));
             return;
         } catch (IOException e) {
-            fillResultAndFinish(UploadingStatus.COMPLETED_WITH_ERROR, ERR_CODE_CANT_READ_INPUT, String.format("Error reading file = %s "));
+            fillResultAndFinish(UploadingStatus.COMPLETED_WITH_ERROR, ERR_CODE_CANT_READ_INPUT, "Error reading file = %s ");
             return;
         }
 
@@ -112,7 +111,6 @@ public class ThreadSender extends Thread {
             if (process.getStatus() == UploadingStatus.CANCELED) {
                 break;
             }
-            // parsing file line.
 
             // composing email.
         }
