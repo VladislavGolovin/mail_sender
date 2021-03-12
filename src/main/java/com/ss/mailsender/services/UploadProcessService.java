@@ -3,7 +3,7 @@ package com.ss.mailsender.services;
 import com.google.common.collect.ImmutableList;
 import com.ss.mailsender.dto.UploadingProcessBriefDto;
 import com.ss.mailsender.dto.UploadingProcessFullDto;
-import com.ss.mailsender.libs.exception.NoWorkingProcessException;
+import com.ss.utils.exception.NoWorkingProcessException;
 import com.ss.mailsender.model.UploadingProcess;
 import com.ss.mailsender.model.UploadingStatus;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package com.ss.mailsender.controllers;
 
 import com.ss.mailsender.dto.UploadingProcessBriefDto;
 import com.ss.mailsender.dto.UploadingProcessFullDto;
-import com.ss.mailsender.libs.exception.NoWorkingProcessException;
+import com.ss.utils.exception.NoWorkingProcessException;
 
 import com.ss.mailsender.libs.mock.UploadingProcessMock;
 import com.ss.mailsender.services.*;
