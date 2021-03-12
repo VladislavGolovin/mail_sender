@@ -17,16 +17,16 @@ public class ListToCsv {
 
     private static final String outputFile = "returnedData.csv";
 
-    public void ListToCsv(List<String[]> notValidData){
+    public void ListToCsv(List<String[]> notValidData) throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
 
         // List<MyBean> notValidData comes from somewhere
-        try {
-            Writer writer = new FileWriter(outputFile);
-            StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer).build();
-            beanToCsv.write(notValidData);
-            writer.close();
-        } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
-            Logger.getLogger(ListToCsv.class.getName()).log(Level.SEVERE,e.getMessage() + ", because " + e.getCause(), e);
-        }
+        Writer writer = new FileWriter(outputFile);
+        StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer).build();
+        beanToCsv.write(notValidData);
+        writer.close();
+//        try {
+//        } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+//            Logger.getLogger(ListToCsv.class.getName()).log(Level.SEVERE,e.getMessage() + ", because " + e.getCause(), e);
+//        }
     }
 }

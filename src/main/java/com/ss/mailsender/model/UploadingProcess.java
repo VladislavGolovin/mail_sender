@@ -52,4 +52,6 @@ public class UploadingProcess {
     @Getter
     @Setter
     private UploadingStatus status;
+
+    public void addProcessedLinesCounter() {processedLinesCounter++;}
 }
