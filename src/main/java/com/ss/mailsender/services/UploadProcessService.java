@@ -6,6 +6,7 @@ import com.ss.mailsender.dto.UploadingProcessFullDto;
 import com.ss.mailsender.libs.exception.NoWorkingProcessException;
 import com.ss.mailsender.model.UploadingProcess;
 import com.ss.mailsender.model.UploadingStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +22,8 @@ public class UploadProcessService {
     private static final String SUCCESS = "OK";
 
     public static final List<UploadingStatus> workingProcesses = ImmutableList.of(NEW, IN_PROGRESS);
+
+    private final EmailService emailService;
 
     public void cancelProcess(int id) {
         List<ThreadSender> threads = ThreadsList.getThreads();
@@ -57,7 +60,7 @@ public class UploadProcessService {
     public String uploadFile(MultipartFile file) {
         StringBuilder message = new StringBuilder();
 
-        ThreadSender sender = new ThreadSender(file);
+        ThreadSender sender = new ThreadSender(file, emailService);
         ThreadsList.addThread(sender);
         try {
             sender.start();
@@ -68,4 +71,8 @@ public class UploadProcessService {
         return message.toString();
     }
 
+    @Autowired
+    public UploadProcessService(EmailService emailService) {
+        this.emailService = emailService;
+    }
 }

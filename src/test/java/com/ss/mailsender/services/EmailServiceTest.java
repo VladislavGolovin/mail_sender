@@ -1,21 +1,21 @@
 package com.ss.mailsender.services;
 
-import com.ss.mailsender.model.Email;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 @SpringBootTest
 class EmailServiceTest {
-
-    private static final String SEND_TO = "a@a.a";
 
     @Autowired
     private EmailService emailService;
 
+    @Disabled
     @Test
     void sendMail() {
-        Email email = new Email(SEND_TO, "some subject", "Some Body");
-        emailService.sendMail(email);
+        emailService.sendMail(List.of("v@k.r", "some subject", "Some Body"));
     }
 }

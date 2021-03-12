@@ -5,6 +5,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmailService {
 
@@ -15,13 +17,13 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendMail(Email email) {
+    public void sendMail(List<String> emailData) {
         var mailMessage = new SimpleMailMessage();
 
         mailMessage.setFrom(SEND_FROM);
-        mailMessage.setTo(email.getTo());
-        mailMessage.setSubject(email.getSubject());
-        mailMessage.setText(email.getBody());
+        mailMessage.setTo(emailData.get(0));
+        mailMessage.setSubject(emailData.get(1));
+        mailMessage.setText(emailData.get(2));
 
         javaMailSender.send(mailMessage);
     }
