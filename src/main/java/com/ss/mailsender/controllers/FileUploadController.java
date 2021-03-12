@@ -29,15 +29,15 @@ public class FileUploadController {
         return "uploadForm";
     }
 
-//    @PostMapping("/")
-//    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-//                                   RedirectAttributes redirectAttributes) {
-//        ThreadSender thread = new ThreadSender(file);
-//        thread.start();
-//        ThreadsList.addThread(thread);
-//
-//        redirectAttributes.addFlashAttribute("message", thread.toString());
-//
-//        return "redirect:/";
-//    }
+    @PostMapping("/")
+    public String handleFileUpload(@RequestParam("file") MultipartFile file,
+                                   RedirectAttributes redirectAttributes) {
+        ThreadSender thread = new ThreadSender(file);
+        thread.start();
+        ThreadsList.addThread(thread);
+
+        redirectAttributes.addFlashAttribute("message", thread.toString());
+
+        return "redirect:/";
+    }
 }
