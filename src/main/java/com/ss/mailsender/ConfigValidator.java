@@ -43,21 +43,21 @@ public class ConfigValidator {
         try
         {
             sMailSever = xmlConf.getField(FIELD_SERVER);
-            if(sMailSever == null)
+            if(sMailSever == null || sMailSever.length() == 0)
             {
-                Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "No param in conf file: '" + FIELD_SERVER + "' in " + xmlConf.getFileAbsolutePath());
+                Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "No param '" + FIELD_SERVER + "' in conf file: " + xmlConf.getFileAbsolutePath());
                 return 1;
             }
             sMailUser = xmlConf.getField(FIELD_USER);
-            if(sMailUser == null)
+            if(sMailUser == null || sMailUser.length() == 0)
             {
-                Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "No param in conf file: '" + FIELD_USER + "' in " + xmlConf.getFileAbsolutePath());
+                Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "No param '" + FIELD_USER + "' in conf file: " + xmlConf.getFileAbsolutePath());
                 return 1;
             }
             sMailPassword = xmlConf.getField(FIELD_PASSWORD);
-            if(sMailPassword == null)
+            if(sMailPassword == null || sMailPassword.length() == 0)
             {
-                Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "No param in conf file: '" + FIELD_PASSWORD + "' in " + xmlConf.getFileAbsolutePath());
+                Logger.getLogger(ConfigValidator.class.getName()).log(Level.SEVERE, "No param '" + FIELD_PASSWORD + "' in conf file: " + xmlConf.getFileAbsolutePath());
                 return 1;
             }
         }

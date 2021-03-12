@@ -13,14 +13,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
-/**
- * // коды ошибок:
- *     // 0 - ошибок нет.
- *     // 1 - неверное имя файла
- *     // 2 - файл не найден
- *     // 3 - файл не найден
- *     // 100 - неизвестная ошибка во время чтения файла
- */
 public class ThreadSender extends Thread {
     public static final String ERR_CODE_OK = "ok";
     public static final String ERR_CODE_WRONG_INPUT_FILE_NAME = "wong input file name";
