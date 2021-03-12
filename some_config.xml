@@ -3,17 +3,42 @@
     <init-param>
         <description>mail server</description>
         <param-name>mail server</param-name>
-        <param-value>smtp.mail.ru</param-value>
+        <param-value>smtp.gmail.com</param-value>
     </init-param>
     <init-param>
         <description>mail user</description>
         <param-name>mail user</param-name>
-        <param-value>a@mail.ru</param-value>
+        <param-value></param-value>
     </init-param>
     <init-param>
         <description>mail password</description>
         <param-name>mail password</param-name>
-        <param-value>a@mail.ru</param-value>
+        <param-value></param-value>
+    </init-param>
+    <init-param>
+        <description>mail port</description>
+        <param-name>mail port</param-name>
+        <param-value>587</param-value>
+    </init-param>
+    <init-param>
+        <description>mail transport protocol</description>
+        <param-name>mail transport protocol</param-name>
+        <param-value>smtp</param-value>
+    </init-param>
+    <init-param>
+        <description>mail smtp auth</description>
+        <param-name>mail smtp auth</param-name>
+        <param-value>true</param-value>
+    </init-param>
+    <init-param>
+        <description>mail smtp starttls enable</description>
+        <param-name>mail smtp starttls enable</param-name>
+        <param-value>true</param-value>
+    </init-param>
+    <init-param>
+        <description>mail debug</description>
+        <param-name>mail debug</param-name>
+        <param-value>true</param-value>
     </init-param>
 
 </ipb-config>
