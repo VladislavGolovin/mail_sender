@@ -31,6 +31,7 @@ public class ThreadSender extends Thread {
     private static int ID = 0;
 
     private final MultipartFile multipartfile;
+    private final EmailService emailService;
 
     @Getter
     private final int localId = ID++;
@@ -45,8 +46,9 @@ public class ThreadSender extends Thread {
             null, "", ERR_CODE_OK,0, 0, 0,
             "", UploadingStatus.NEW);
 
-    public ThreadSender(MultipartFile multipartfile) {
+    public ThreadSender(MultipartFile multipartfile, EmailService emailService) {
         this.multipartfile = multipartfile;
+        this.emailService = emailService;
     }
 
     @Override
@@ -78,9 +80,7 @@ public class ThreadSender extends Thread {
 
         try
         {
-            csvReader = new Csv.Reader(new BufferedReader(
-                    new InputStreamReader(multipartfile.getInputStream(), StandardCharsets.UTF_8)));
-
+            csvReader = new Csv.Reader(new InputStreamReader(multipartfile.getInputStream(), StandardCharsets.UTF_8));
         } catch (FileNotFoundException e) {
             fillResultAndFinish(UploadingStatus.COMPLETED_WITH_ERROR, ERR_CODE_INPUT_FILE_FOT_FOUND, String.format("File = %s not found", fileName));
             return;
@@ -107,6 +107,7 @@ public class ThreadSender extends Thread {
             }
 
             // sending email.
+            emailService.sendMail(csvLine);
 
             if (process.getStatus() == UploadingStatus.CANCELED) {
                 break;
