@@ -18,15 +18,4 @@ public class DateTimeUtil {
                 dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond());
         return calendar.getTime();
     }
-
-//    public static UploadingProcessTo createUploadProcess(UploadingProcess process) {
-//        return new UploadingProcessTo(process.getId(),
-//                getNameFromAbsoluteName(process.getAbsoluteUploadFileName()),
-//                process.getProcessedLinesCounter(),
-//                process.getStatus());
-//    }
-//
-//    public static String getNameFromAbsoluteName(String absoluteName) {
-//        return absoluteName.substring(absoluteName.lastIndexOf('/') + 1);
-//    }
 }

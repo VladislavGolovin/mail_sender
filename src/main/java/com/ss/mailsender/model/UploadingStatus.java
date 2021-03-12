@@ -6,7 +6,8 @@ public enum UploadingStatus {
     IN_PROGRESS("in progress"),
     COMPLETED("completed"),
     COMPLETED_WITH_ERROR("completed with error"),
-    WARNING("file was loaded, but there are errors in lines");
+    WARNING("file was loaded, but there are errors in lines"),
+    CANCELED("process was canceled");
 
     private String description;
 

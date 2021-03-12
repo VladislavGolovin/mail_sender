@@ -31,6 +31,10 @@ public class UploadingProcess {
 
     @Getter
     @Setter
+    private int errorCode;
+
+    @Getter
+    @Setter
     private int processedLinesCounter;
 
     @Getter

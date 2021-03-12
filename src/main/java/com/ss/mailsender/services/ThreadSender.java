@@ -1,5 +1,8 @@
 package com.ss.mailsender.services;
 
+import com.ss.mailsender.model.UploadingProcess;
+import com.ss.mailsender.model.UploadingStatus;
+import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -10,46 +13,36 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * // коды ошибок:
+ *     // 0 - ошибок нет.
+ *     // 1 - неверное имя файла
+ *     // 2 - файл не найден
+ *     // 100 - неизвестная ошибка во время чтения файла
+ */
 public class ThreadSender extends Thread {
-
-    public static final String STATUS_NEW = "new";
-    public static final String STATUS_RUN = "run";
-    public static final String STATUS_FINISHED = "finished";
-    public static final String STATUS_ERROR = "error";
-    public static final String STATUS_2CANCEL = "to cancel";
 
     private static int ID = 0;
 
     private final MultipartFile multipartfile;
 
+    @Getter
     private int localId = ID++;
-    private int rows = 0;
-    private String status = STATUS_NEW;
-    // коды ошибок:
-    // 0 - ошибок нет.
-    // 1 - неверное имя файла
-    // 2 - файл не найден
-    // 100 - неизвестная ошибка во время чтения файла
-    private int errorCode;
-    private String errorDesc;
-    private LocalDateTime finishDate = null;
 
-    //private UploadingProcessTo dto = new UploadingProcessTo();
+    @Getter
+    private UploadingProcess process = new UploadingProcess(localId, "", LocalDateTime.now(),
+            null, "", 0,0, 0, 0,
+            "", UploadingStatus.NEW);
+    ;
 
     public ThreadSender(MultipartFile multipartfile) {
         this.multipartfile = multipartfile;
     }
 
-//    public UploadingProcessTo getDto()
-//    {
-//        UploadingProcessTo res = new UploadingProcessTo();
-//
-//        return res;
-//    }
-
     @Override
     public void run() {
-        status = STATUS_RUN;
+        process.setStatus(UploadingStatus.IN_PROGRESS);
+        process.setAbsoluteUploadFileName(multipartfile.getOriginalFilename());
 
         // for checking thread
         try {
@@ -57,81 +50,42 @@ public class ThreadSender extends Thread {
         } catch (InterruptedException e) {
 
         }
-        //
 
         // open file
         String fileName = multipartfile.getOriginalFilename();
         if (fileName != null && !fileName.endsWith(".csv")) {
-            fillProcessingResults(STATUS_ERROR, 1, "File " + fileName + ": the file extension should be .csv");
+            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, 1,
+                    String.format("File = %s has wrong extension : the file extension should be .csv", fileName));
+            return;
         }
 
         try (var reader = new BufferedReader(
                 new InputStreamReader(multipartfile.getInputStream(), StandardCharsets.UTF_8))) {
             String fileLine;
             while ((fileLine = reader.readLine()) != null) {
-                if (STATUS_2CANCEL.equals(status)) {
+                if (process.getStatus() == UploadingStatus.CANCELED) {
                     break;
                 }
-                rows++;
-
+                process.setProcessedLinesCounter(process.getProcessedLinesCounter() + 1);
                 // parsing file line.
                 // composing email.
                 // sending email.
-
             }
 
-            fillProcessingResults(STATUS_FINISHED, 0, "File was processing successfully");
+            fillProcessingResults(UploadingStatus.COMPLETED, 0,"File was processed successfully");
         } catch (FileNotFoundException e) {
-            fillProcessingResults(STATUS_ERROR, 2, "File " + fileName + ": the file extension should be .csv");
+            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, 2, String.format("File = %s not found", fileName));
         } catch (IOException e) {
-            fillProcessingResults(STATUS_ERROR, 100, "File " + fileName + ": error during file reading");
+            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, 100, String.format("Error reading file = %s "));
         }
     }
 
-    public void setStatus2Cancel() {
-        this.status = STATUS_2CANCEL;
+    private void fillProcessingResults(UploadingStatus status, int errorCode, String errorDesc) {
+        process.setStatus(status);
+        process.setErrorCode(errorCode);
+        process.setErrorDescription(errorDesc);
+        process.setFinishDateTime(LocalDateTime.now());
     }
 
-    public int getRows() {
-        return rows;
-    }
 
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public String getErrorDesc() {
-        return errorDesc;
-    }
-
-    public int getLocalId() {
-        return localId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public LocalDateTime getFinishDate() {
-        return finishDate;
-    }
-
-    private void fillProcessingResults(String status, int errorCode, String errorDesc) {
-        this.status = status;
-        this.errorCode = errorCode;
-        this.errorDesc = errorDesc;
-        this.finishDate = LocalDateTime.now();
-    }
-
-    @Override
-    public String toString() {
-        return "ThreadSender{" +
-                "Id=" + localId +
-                ", rows=" + rows +
-                ", status='" + status + '\'' +
-                ", error code='" + errorCode + '\'' +
-                ", error desc='" + errorDesc + '\'' +
-                ", finish date=" + finishDate +
-                '}';
-    }
 }
