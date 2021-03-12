@@ -1,9 +1,10 @@
-package com.ss.mailsender.mock;
+package com.ss.mailsender.libs.mock;
 
 import com.ss.mailsender.dto.UploadingProcessBriefDto;
 import com.ss.mailsender.dto.UploadingProcessFullDto;
 import com.ss.mailsender.model.UploadingProcess;
 import com.ss.mailsender.model.UploadingStatus;
+import com.ss.mailsender.services.ThreadSender;
 
 import java.time.LocalDateTime;
 import java.time.Month;
