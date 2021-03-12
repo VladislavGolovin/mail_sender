@@ -1,6 +1,7 @@
 package com.ss.mailsender.services;
 
 import com.ss.mailsender.libs.DateTimeUtil;
+import com.ss.mailsender.model.UploadingProcess;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,10 +26,11 @@ public class ThreadsList {
         Calendar now = Calendar.getInstance();
         for (int i = 0; i < threads.size(); i++) {
             ThreadSender thread = threads.get(i);
-            if (thread.getFinishDate() == null)
+            UploadingProcess process = thread.getProcess();
+            if (process.getFinishDateTime() == null)
                 continue;
 
-            calendar.setTime(DateTimeUtil.convertLocalDateTimeToDate(thread.getFinishDate()));
+            calendar.setTime(DateTimeUtil.convertLocalDateTimeToDate(process.getFinishDateTime()));
             calendar.add(Calendar.SECOND, MAX_CACHE_TIME_SEC);
             if (now.after(calendar)) {
                 threads.remove(i);

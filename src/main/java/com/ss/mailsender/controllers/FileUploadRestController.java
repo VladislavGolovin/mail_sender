@@ -5,8 +5,7 @@ import com.ss.mailsender.dto.UploadingProcessFullDto;
 import com.ss.mailsender.mock.UploadingProcessMock;
 import com.ss.mailsender.model.UploadingProcess;
 import com.ss.mailsender.model.UploadingStatus;
-import com.ss.mailsender.services.FileProcessException;
-import com.ss.mailsender.services.FileProcessor;
+import com.ss.mailsender.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +25,10 @@ import java.util.List;
 public class FileUploadRestController {
     static final String REST_URL = "/processes";
     private static final Logger logger = LoggerFactory.getLogger(FileUploadRestController.class);
+
+    @Autowired
+    private static UploadProcessService service;
+
     @Autowired
     private static UploadingProcessMock mock;
 
@@ -62,7 +62,7 @@ public class FileUploadRestController {
             message.append("You successfully uploaded!");
         } catch (FileProcessException e) {
             for (String error : e.getProcessingResult().getErrors()) {
-                message.append(error).append("\n");
+                message.append(error);
             }
         }
 
@@ -73,6 +73,6 @@ public class FileUploadRestController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancelProcess(@PathVariable int id) {
-
+        service.cancelProcess(id);
     }
 }
