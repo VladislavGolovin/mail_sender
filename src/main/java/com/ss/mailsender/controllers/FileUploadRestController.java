@@ -1,6 +1,8 @@
 package com.ss.mailsender.controllers;
 
-import com.ss.mailsender.dto.UploadingProcessTo;
+import com.ss.mailsender.dto.UploadingProcessBriefDto;
+import com.ss.mailsender.dto.UploadingProcessFullDto;
+import com.ss.mailsender.mock.UploadingProcessMock;
 import com.ss.mailsender.model.UploadingProcess;
 import com.ss.mailsender.model.UploadingStatus;
 import com.ss.mailsender.services.FileProcessException;
@@ -26,7 +28,9 @@ import java.util.List;
 @RequestMapping(value = FileUploadRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class FileUploadRestController {
     static final String REST_URL = "/processes";
-    private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadRestController.class);
+    @Autowired
+    private static UploadingProcessMock mock;
 
     @Autowired
     private final FileProcessor fileProcessor;
@@ -36,24 +40,15 @@ public class FileUploadRestController {
     }
 
     @GetMapping("/{id}")
-    public UploadingProcess get(@PathVariable int id) {
+    public UploadingProcessFullDto get(@PathVariable int id) {
         logger.info("get process with id={}", id);
-        return new UploadingProcess(1,
-                "uploadingTest/test.csv",
-                LocalDateTime.of(2021, Month.MARCH, 10, 11,30),
-                LocalDateTime.of(2021, Month.MARCH, 10, 12,00),
-                "there are some errors in lines",
-                100,
-                20,
-                80,
-                "uploadingTest/errors.csv",
-                UploadingStatus.WARNING);
+        return mock.get(id);
     }
 
     @GetMapping
-    public List<UploadingProcessTo> getAll() {
+    public List<UploadingProcessBriefDto> getAll() {
         logger.info("get all processes");
-        return new ArrayList<>();
+        return mock.getAll();
     }
 
     @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
@@ -73,6 +68,11 @@ public class FileUploadRestController {
 
         redirectAttributes.addFlashAttribute("message", message.toString());
         return "redirect:/";
-        //?we need to return 303 after processing finished
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelProcess(@PathVariable int id) {
+
     }
 }
