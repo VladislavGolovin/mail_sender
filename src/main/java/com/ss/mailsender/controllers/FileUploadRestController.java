@@ -3,6 +3,7 @@ package com.ss.mailsender.controllers;
 import com.ss.mailsender.dto.UploadingProcessBriefDto;
 import com.ss.mailsender.dto.UploadingProcessFullDto;
 import com.ss.mailsender.libs.exception.NoWorkingProcessException;
+
 import com.ss.mailsender.libs.mock.UploadingProcessMock;
 import com.ss.mailsender.services.*;
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
