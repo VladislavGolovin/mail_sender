@@ -1,13 +1,12 @@
 package com.ss.mailsender.dto;
 
 import com.ss.mailsender.model.UploadingStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class UploadingProcessTo {
     @Getter
     @Setter
