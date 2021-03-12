@@ -31,7 +31,7 @@ public class ThreadSender extends Thread {
 
     @Getter
     private UploadingProcess process = new UploadingProcess(localId, "", LocalDateTime.now(),
-            null, "", 0,0, 0, 0,
+            null, "", "0",0, 0, 0,
             "", UploadingStatus.NEW);
     ;
 
@@ -54,7 +54,7 @@ public class ThreadSender extends Thread {
         // open file
         String fileName = multipartfile.getOriginalFilename();
         if (fileName != null && !fileName.endsWith(".csv")) {
-            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, 1,
+            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, "1",
                     String.format("File = %s has wrong extension : the file extension should be .csv", fileName));
             return;
         }
@@ -72,15 +72,15 @@ public class ThreadSender extends Thread {
                 // sending email.
             }
 
-            fillProcessingResults(UploadingStatus.COMPLETED, 0,"File was processed successfully");
+            fillProcessingResults(UploadingStatus.COMPLETED, "0","File was processed successfully");
         } catch (FileNotFoundException e) {
-            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, 2, String.format("File = %s not found", fileName));
+            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, "2", String.format("File = %s not found", fileName));
         } catch (IOException e) {
-            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, 100, String.format("Error reading file = %s "));
+            fillProcessingResults(UploadingStatus.COMPLETED_WITH_ERROR, "100", String.format("Error reading file = %s "));
         }
     }
 
-    private void fillProcessingResults(UploadingStatus status, int errorCode, String errorDesc) {
+    private void fillProcessingResults(UploadingStatus status, String errorCode, String errorDesc) {
         process.setStatus(status);
         process.setErrorCode(errorCode);
         process.setErrorDescription(errorDesc);

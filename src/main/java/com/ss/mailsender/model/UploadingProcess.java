@@ -31,7 +31,7 @@ public class UploadingProcess {
 
     @Getter
     @Setter
-    private int errorCode;
+    private String errorCode;
 
     @Getter
     @Setter
