@@ -8,12 +8,12 @@
     <init-param>
         <description>mail user</description>
         <param-name>mail user</param-name>
-        <param-value></param-value>
+        <param-value>dfj@mail.ru</param-value>
     </init-param>
     <init-param>
         <description>mail password</description>
         <param-name>mail password</param-name>
-        <param-value></param-value>
+        <param-value>dfgf</param-value>
     </init-param>
     <init-param>
         <description>mail port</description>
