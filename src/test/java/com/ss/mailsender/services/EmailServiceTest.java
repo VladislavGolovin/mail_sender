@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class EmailServiceTest {
 
-    private static final String SEND_TO = "";
+    private static final String SEND_TO = "a@a.a";
 
     @Autowired
     private EmailService emailService;
