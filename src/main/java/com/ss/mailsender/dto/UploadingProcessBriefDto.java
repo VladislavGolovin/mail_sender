@@ -1,5 +1,6 @@
 package com.ss.mailsender.dto;
 
+import com.ss.mailsender.model.UploadingProcess;
 import com.ss.mailsender.model.UploadingStatus;
 import lombok.*;
 
@@ -7,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class UploadingProcessTo {
+public class UploadingProcessBriefDto {
     @Getter
     @Setter
     private int id;
@@ -23,4 +24,11 @@ public class UploadingProcessTo {
     @Getter
     @Setter
     private UploadingStatus status;
+
+    public UploadingProcessBriefDto(UploadingProcess process) {
+        this.id = process.getId();
+        this.fileName = process.getAbsoluteUploadFileName();
+        this.processedLinesCounter = process.getProcessedLinesCounter();
+        this.status = process.getStatus();
+    }
 }

@@ -29,7 +29,11 @@ public class DataValidator {
     int emailPosition = 0;
     int validNumberOfData = 3;
 
-    // as result we are returning map of valid and invalid rows
+    /**
+     *
+     * @param fileName
+     * @return as result we are returning map of valid and invalid rows
+     */
     public Map <String, List<String[]>> dataValidator(String fileName){
 
         // creating object of CsvParser
@@ -42,11 +46,13 @@ public class DataValidator {
         // watching rows(lines) one by one. If row contains valid number of elements
         // and emailchecker returns "true" - adding row in validList
         for (String[] data: notSortedData) {
-            if (data.length == validNumberOfData && emailChecker(data[emailPosition]) == true){
+            boolean emailCorrect = (data.length > emailPosition && emailChecker(data[emailPosition]));
+
+            if (data.length == validNumberOfData && emailCorrect){
                 validData.add(data);
 
                 // if row`s length is invalid, we are adding error message to the first column
-            } else if (data.length != validNumberOfData && emailChecker(data[emailPosition]) == true){
+            } else if (data.length != validNumberOfData && emailCorrect){
                 message = "row`s lenght not valid";
                 String[] invalidData = new String[data.length + 1];
                 invalidData[0] = message;
@@ -54,7 +60,7 @@ public class DataValidator {
                 notValidData.add(invalidData);
 
                 // if row`s length and email is invalid, we are adding error message to the first column
-            } else if (data.length != validNumberOfData && emailChecker(data[emailPosition]) != true){
+            } else if (data.length != validNumberOfData && emailCorrect){
                 message = "row`s lenght not valid and email is invalid!";
                 String[] invalidData = new String[data.length + 1];
                 invalidData[0] = message;
@@ -62,7 +68,7 @@ public class DataValidator {
                 notValidData.add(invalidData);
 
                 // if email is invalid, we are adding error message to the first column
-            } else if (data.length == validNumberOfData && emailChecker(data[emailPosition]) != true){
+            } else if (data.length == validNumberOfData && emailCorrect){
                 message = "email is invalid!";
                 String[] invalidData = new String[data.length + 1];
                 invalidData[0] = message;
@@ -75,7 +81,11 @@ public class DataValidator {
         return lists;
     }
 
-    // checking for email validation
+    /**
+     * checking for email validation
+     * @param email
+     * @return TRUE if email is correct
+     */
     public boolean emailChecker(String email){
 
         String regexForEmailValidation = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
