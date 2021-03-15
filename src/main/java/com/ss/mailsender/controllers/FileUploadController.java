@@ -21,10 +21,12 @@ public class FileUploadController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
     private final FileProcessor fileProcessor;
+    private final EmailService emailService;
 
     @Autowired
-    public FileUploadController(FileProcessor fileProcessor) {
+    public FileUploadController(FileProcessor fileProcessor, EmailService emailService) {
         this.fileProcessor = fileProcessor;
+        this.emailService = emailService;
     }
 
     @GetMapping("/")
@@ -35,9 +37,7 @@ public class FileUploadController {
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
-        JavaMailSender javaMailSender = new JavaMailSenderImpl();
-
-        ThreadSender thread = new ThreadSender(file, new EmailService(javaMailSender));
+        ThreadSender thread = new ThreadSender(file, emailService);
         thread.start();
         ThreadsList.addThread(thread);
 
